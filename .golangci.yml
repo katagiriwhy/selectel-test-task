@@ -1,0 +1,9 @@
+linters:
+  enable:
+    - loglint
+
+linters-settings:
+  custom:
+    loglint:
+      path: ./cmd
+

@@ -1,0 +1,10 @@
+rules:
+  lowercase: true
+  english_only: true
+  no_special_symbols: true
+  sensitive_data: true
+
+sensitive_patterns:
+  - password
+  - token
+  - api_key

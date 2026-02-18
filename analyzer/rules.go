@@ -6,6 +6,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/enescakir/emoji"
+
+	"selectel/config"
 )
 
 func checkLowercase(msg string) bool {
@@ -26,27 +28,33 @@ func checkEnglish(msg string) bool {
 	return true
 }
 
-func checkNoSpecialChars(msg string) bool {
+func checkNoSpecialChars(msg string, cfg *config.Config) bool {
+	if cfg == nil {
+		cfg = config.Load("")
+	}
+
 	for _, r := range msg {
-		if unicode.IsSymbol(r) || unicode.IsPunct(r) {
-			if r != ' ' || emoji.Exist(string(r)) {
-				return false
-			}
+		// emojis
+		if emoji.Exist(string(r)) {
+			return false
+		}
+
+		// explicitly forbidden symbols from config
+		if strings.ContainsRune(cfg.ForbiddenSymbols, r) {
+			return false
 		}
 	}
+
 	return true
 }
 
-var sensitiveKeywords = []string{
-	"password",
-	"token",
-	"api_key",
-	"secret",
-}
+func checkSensitive(msg string, cfg *config.Config) bool {
+	if cfg == nil {
+		cfg = config.Load("")
+	}
 
-func checkSensitive(msg string) bool {
 	lower := strings.ToLower(msg)
-	for _, kw := range sensitiveKeywords {
+	for _, kw := range cfg.SensitivePatterns {
 		if strings.Contains(lower, kw) {
 			return false
 		}

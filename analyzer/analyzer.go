@@ -7,9 +7,10 @@ import (
 )
 
 var Analyzer = &analysis.Analyzer{
-	Name: "loglint",
-	Doc:  "checks log messages style and safety",
-	Run:  run,
+	Name:             "loglint",
+	Doc:              "checks log messages style and safety",
+	Run:              run,
+	RunDespiteErrors: true,
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
